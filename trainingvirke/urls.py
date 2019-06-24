@@ -19,10 +19,15 @@ from django.urls import path
 from django.conf.urls import url
 from rest_framework import routers
 
+# third party
+from rest_framework_simplejwt import views as jwt_views
+
 # owns packages
 from vkadmin.views import UsersList
 
 urlpatterns = [
+    url(r'token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    url(r'token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
     path('admin/', admin.site.urls),
     url(r'^users/', UsersList.as_view()) # GET, POST users
 ]
