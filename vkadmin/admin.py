@@ -4,12 +4,12 @@
 from django.contrib import admin
 
 # owns packages
-from .models import UserCustom
+from .models import User
 
 # Register your models here.
 
-@admin.register(UserCustom)
-class UserCustomAdmin(admin.ModelAdmin):
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
     pass
 
 
