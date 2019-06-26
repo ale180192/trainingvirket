@@ -104,5 +104,9 @@ venv.bak/
 .mypy_cache/
 
 
-
+# owns
 myenv/
+myvenv_vagrant
+Vagrantfile
+*.log
+.vagrant/
