@@ -26,6 +26,7 @@ from rest_framework_simplejwt import views as jwt_views
 from vkadmin.views import UsersList
 
 urlpatterns = [
+    path('admin/doc/', include('django.contrib.admindocs.urls')),
     path('admin/', admin.site.urls),
     url(r'^vkadmin/', include('vkadmin.urls')),
 ]

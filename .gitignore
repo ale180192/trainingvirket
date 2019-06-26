@@ -110,3 +110,4 @@ myvenv_vagrant
 Vagrantfile
 *.log
 .vagrant/
+.vscode/
