@@ -9,7 +9,12 @@ https://docs.djangoproject.com/en/2.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
-
+from pathlib import Path
+env_file = '.env'
+env_path = Path(env_file)
+if env_path.is_file():
+    from dotenv import load_dotenv
+    load_dotenv(dotenv_path=env_file, verbose=True)
 import os
 from datetime import timedelta
 
@@ -26,19 +31,33 @@ SECRET_KEY = '8h)t89x#@qafc(=r&+p3fbcglu^+)g(7zu$wbj!5pov89zb5fr'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
+SHARED_APPS = (
+    'tenant_schemas',
+    'tenant',
+    'django.contrib.contenttypes',
+    'django.contrib.auth',
+    'django.contrib.admin',
+    'vkadmin'
+)
+TENANT_APPS = (
+    'django.contrib.contenttypes',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.sessions',
+    'vkadmin'
+)
 
 INSTALLED_APPS = [
-    # django apps
+    'tenant_schemas',
+    'tenant',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
 
     # third party apps
     'rest_framework',
@@ -48,7 +67,12 @@ INSTALLED_APPS = [
     'vkadmin'
 ]
 
+DEFAULT_FILE_STORAGE = 'tenant_schemas.storage.TenantFileSystemStorage'
+
+TENANT_MODEL = "tenant.Tenant"
+
 MIDDLEWARE = [
+    'tenant_schemas.middleware.TenantMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -82,13 +106,22 @@ WSGI_APPLICATION = 'trainingvirke.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+dbconfig = {
+    'ENGINE': 'tenant_schemas.postgresql_backend',
+    'NAME': os.getenv('DB_NAME', ''),
+    'USER': os.getenv('DB_USER', ''),
+    'PASSWORD': os.getenv('DB_PASSWORD', ''),
+    'HOST': '127.0.0.1',
+    'PORT': '5432'
 }
 
+DATABASES = {
+    'default': dbconfig
+}
+
+DATABASE_ROUTERS = (
+    'tenant_schemas.routers.TenantSyncRouter',
+)
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
