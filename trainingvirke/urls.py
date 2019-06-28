@@ -29,4 +29,5 @@ urlpatterns = [
     path('admin/doc/', include('django.contrib.admindocs.urls')),
     path('admin/', admin.site.urls),
     url(r'^vkadmin/', include('vkadmin.urls')),
+    url(r'^products', include('products.urls'))
 ]
