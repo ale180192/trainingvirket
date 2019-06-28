@@ -9,6 +9,12 @@ https://docs.djangoproject.com/en/2.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
+from pathlib import Path
+env_file = '.env'
+env_path = Path(env_file)
+if env_path.is_file():
+    from dotenv import load_dotenv
+    load_dotenv(dotenv_path=env_file, verbose=True)
 
 import os
 from datetime import timedelta
