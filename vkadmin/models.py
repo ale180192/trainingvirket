@@ -6,10 +6,15 @@ from django.contrib.auth.models import PermissionsMixin
 from django.contrib.admin import AdminSite, site
 from django.contrib import admin
 
+# third-party packages
+from tenant_schemas.models import TenantMixin
 # Create your models here.
 
 
-
+class Client(TenantMixin):
+    on_trial = models.BooleanField()
+    date_register = models.DateTimeField(auto_now=True)
+    auto_create_schema = True
 
 
 class UserManager(BaseUserManager):

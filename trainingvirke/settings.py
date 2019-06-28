@@ -26,12 +26,39 @@ SECRET_KEY = '8h)t89x#@qafc(=r&+p3fbcglu^+)g(7zu$wbj!5pov89zb5fr'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '.localhost'
+]
+
+
+# it's used by tenant
+SHARED_APPS = (
+    'tenant_schemas',
+    'vkadmin',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'django.contrib.admindocs',
+)
+
+
+# it's used by tenant
+TENANT_APPS = (
+    'products',
+)
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    # third party apps
+    'tenant_schemas',
+    'rest_framework',
+    'django_extensions',
+
     # django apps
     'django.contrib.admin',
     'django.contrib.auth',
@@ -41,15 +68,19 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.admindocs',
 
-    # third party apps
-    'rest_framework',
-    'django_extensions',
-    
     # own apps
-    'vkadmin'
+    'vkadmin',
+    'products'
 ]
+# model tenant client
 
+TENANT_MODEL = "vkadmin.Client" # app.Model
+# teanants visibility to querys
+#PG_EXTRA_SEARCH_PATHS = ['extensions']
+#PUBLIC_SCHEMA_URLCONF = 'trainingvirket.urls_public'
+DEFAULT_FILE_STORAGE = 'tenant_schemas.storage.TenantFileSystemStorage'
 MIDDLEWARE = [
+    'tenant_schemas.middleware.TenantMiddleware', # tenant
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -83,22 +114,23 @@ WSGI_APPLICATION = 'trainingvirke.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
-
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
+'''
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'trainingvirket',
-        'USER': 'traininguser',
-        'PASSWORD': 'passwordnosecure',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        #'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'tenant_schemas.postgresql_backend',
+        'NAME': os.getenv('NAME_DB'),
+        'USER': os.getenv('USER_DB'),
+        'PASSWORD': os.getenv('PASSWORD_DB'),
+        'HOST': os.getenv('HOST_DB'),
+        'PORT': os.getenv('PORT_DB'),
     }
 }
 
@@ -174,4 +206,9 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
-AUTH_USER_MODEL = 'vkadmin.USER'
+AUTH_USER_MODEL = 'vkadmin.User'
+
+# tenant conf
+DATABASE_ROUTERS = (
+    'tenant_schemas.routers.TenantSyncRouter',
+)

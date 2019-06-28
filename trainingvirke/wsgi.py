@@ -8,6 +8,15 @@ https://docs.djangoproject.com/en/2.0/howto/deployment/wsgi/
 """
 
 import os
+from pathlib import Path  # python3 only
+
+# third-party
+from dotenv import load_dotenv
+
+# load environment vars
+
+load_dotenv(verbose=True)
+
 
 from django.core.wsgi import get_wsgi_application
 

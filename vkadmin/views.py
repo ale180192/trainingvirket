@@ -30,6 +30,6 @@ class UsersList(APIView):
         print(user.email)
         data = User.objects.all().values()
         print('data: ', data)
+        print(request.tenant.domain_url)
 
         return Response({'success': True, 'data': data, 'msg': 'ok'}, status.HTTP_200_OK)
-

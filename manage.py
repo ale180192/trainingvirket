@@ -1,8 +1,15 @@
 #!/usr/bin/env python
 import os
 import sys
+from pathlib import Path  # python3 only
+
+# third-party
+from dotenv import load_dotenv
+
+# load environment vars
 
 if __name__ == "__main__":
+    load_dotenv()
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "trainingvirke.settings")
     try:
         from django.core.management import execute_from_command_line
