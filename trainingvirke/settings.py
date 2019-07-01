@@ -64,7 +64,6 @@ INSTALLED_APPS = [
     'tenant_schemas',
     'rest_framework',
     'django_extensions',
-    'debug_toolbar',
 
     # django apps
     'django.contrib.admin',
@@ -89,7 +88,6 @@ DEFAULT_FILE_STORAGE = 'tenant_schemas.storage.TenantFileSystemStorage'
 MIDDLEWARE = [
     'tenant_schemas.middleware.TenantMiddleware', # tenant
     'django.middleware.security.SecurityMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     #'django.middleware.csrf.CsrfViewMiddleware',

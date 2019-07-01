@@ -12,7 +12,7 @@ from tenant_schemas.models import TenantMixin
 
 
 class Client(TenantMixin):
-    on_trial = models.BooleanField()
+    on_trial = models.BooleanField(default=False)
     date_register = models.DateTimeField(auto_now=True)
     auto_create_schema = True
 
