@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'tenant_schemas',
     'rest_framework',
     'django_extensions',
+    'debug_toolbar',
 
     # django apps
     'django.contrib.admin',
@@ -88,9 +89,10 @@ DEFAULT_FILE_STORAGE = 'tenant_schemas.storage.TenantFileSystemStorage'
 MIDDLEWARE = [
     'tenant_schemas.middleware.TenantMiddleware', # tenant
     'django.middleware.security.SecurityMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    #'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -218,3 +220,12 @@ AUTH_USER_MODEL = 'vkadmin.User'
 DATABASE_ROUTERS = (
     'tenant_schemas.routers.TenantSyncRouter',
 )
+
+# TEST_DATABASE_PREFIX = 'test_'
+
+# for django-tool
+INTERNAL_IPS = [
+    # ...
+    '127.0.0.1',
+    # ...
+]

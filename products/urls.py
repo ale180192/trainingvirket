@@ -4,7 +4,7 @@ from django.urls import include
 # owns packages
 from .views import ProductList
 urlpatterns = [
-    url(r'', ProductList.as_view()),
+    url(r'^$', ProductList.as_view()),
 ]
 
 

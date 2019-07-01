@@ -1,7 +1,7 @@
 from .models import Client
 
 
-
+'''
 
 tenant1 = Client(
     domain_url='localhost',
@@ -13,6 +13,14 @@ tenant2 = Client(
     schema_name='demo',
     on_trial=True
 )
-
+'''
+tenant3 = Client(
+    domain_url='demo2.localhost',
+    schema_name='demo2',
+    on_trial=True
+)
+'''
 tenant1.save()
 tenant2.save()
+'''
+tenant3.save()

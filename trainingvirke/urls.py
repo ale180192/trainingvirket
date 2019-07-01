@@ -24,6 +24,8 @@ from rest_framework_simplejwt import views as jwt_views
 
 # owns packages
 from vkadmin.views import UsersList
+from trainingvirke.settings import DEBUG
+
 
 urlpatterns = [
     path('admin/doc/', include('django.contrib.admindocs.urls')),
@@ -31,3 +33,11 @@ urlpatterns = [
     url(r'^vkadmin/', include('vkadmin.urls')),
     url(r'^products', include('products.urls'))
 ]
+
+
+if DEBUG:
+    import debug_toolbar
+
+    urlpatterns += (
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    )
