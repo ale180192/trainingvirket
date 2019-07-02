@@ -104,7 +104,6 @@ class ProductsTestCase(TenantTestCase):
         print()
         django.setup()
         self.c = TenantClient(self.tenant)
-        help(self.c)
 
 
     def test_insert(self):
@@ -127,7 +126,10 @@ class ProductsTestCase(TenantTestCase):
 
     def test_update(self):
         data_update = {
-            'name': 'name update',
+            'name': 'name update test',
             'description': 'new description'
         }
-        
+        self.test_insert()
+        response = self.c.patch('/products/1', data=data_update)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
