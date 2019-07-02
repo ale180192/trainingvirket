@@ -14,7 +14,7 @@ from .models import User
 
 
 
-
+#TODO: Delete superfluous code
 class VkTestCase(TenantTestCase):
     '''
         class that autehnticate to user for it have user
@@ -22,20 +22,15 @@ class VkTestCase(TenantTestCase):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        print('init class')
         self.user = 'test'
         self.email = 'test@test.com'
         self.password = 'testpwd'
         self.name = 'test name'
         self.password_wrong = 'wrong password   '
-        print('init')
     
     def setUp(self):
         django.setup()
         self.c = TenantClient(self.tenant)
-        print(self.c)
-
-     
 
 
 class UsersTestCase(TenantTestCase):
@@ -43,18 +38,16 @@ class UsersTestCase(TenantTestCase):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        print('init class')
         self.user = 'test'
         self.email = 'test@test.com'
         self.password = 'testpwd'
         self.name = 'test name'
         self.password_wrong = 'wrong password   '
-        print('init')
 
     def setUp(self):
+        #TODO: I think this django.setup() is unnecessary.
         django.setup()
         self.c = TenantClient(self.tenant)
-        print(self.c)
 
 
     def test_create_superuser(self):
@@ -74,9 +67,11 @@ class UsersTestCase(TenantTestCase):
             we authenticate with a user and right password
          
         '''
+        #TODO: function test_create_superuser haz assertion code
+        # you must create an independent function to be in charge of creating the superuser without 
+        # the assertion code.
         self.test_create_superuser()
         response = self.c.post('/vkadmin/token', {'user': self.user, 'password': self.password}, format='json')
-        print(response.data)
         self.assertEqual(response.status_code, 200)
         response_expect_keys = ['access', 'refresh']
         for key in response_expect_keys:
@@ -87,9 +82,10 @@ class UsersTestCase(TenantTestCase):
         '''
             we authenticate with a wrong password
         '''
+        #TODO: best practice is to test against what is expected.
+        # in this test you are testing if status code != 200 but this test will pass if the code is 401 (Unauthorized)
         self.test_create_superuser()
         response = self.c.post('/vkadmin/token', {'user': self.user, 'password': self.password_wrong}, format='json')
-        print(response.data)
         self.assertNotEqual(response.status_code, 200)
         response_expect_keys = ['access', 'refresh']
         for key in response_expect_keys:
@@ -98,14 +94,11 @@ class UsersTestCase(TenantTestCase):
 
 class ProductsTestCase(TenantTestCase):
 
-
     def setUp(self):
-        print('--------------  ************** setup ProductsTestCase ************** -----------------------------')
-        print()
         django.setup()
         self.c = TenantClient(self.tenant)
 
-
+    #TODO: pricce?
     def test_insert(self):
         data = {
             'name': 'name value',
@@ -113,14 +106,13 @@ class ProductsTestCase(TenantTestCase):
             'pricce': 55.69
         }
         response = self.c.post('/products', data=data)
-        print(response)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_list_all(self):
+        #TODO: same case as test_authenticate_success
         self.test_insert()
         self.test_insert()
         response = self.c.get('/products')
-        print(status.HTTP_200_OK)
         self.assertEqual(response.status_code, status.HTTP_200_OK)  
         self.assertEqual(len(response.data['data']), 2)
 
@@ -130,6 +122,8 @@ class ProductsTestCase(TenantTestCase):
             'description': 'new description'
         }
         self.test_insert()
+
         response = self.c.patch('/products/1', data=data_update)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+#TODO: Delete all the commented stuff that is not documentation (Including TODO tags)
