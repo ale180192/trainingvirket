@@ -17,7 +17,6 @@ class ProductList(APIView):
     '''
     authentication = (TokenAuthentication,)
     def post(self, request, format=None):
-        print(request)
         data = request.data
         product = ProductSerializer(data=data)
         if product.is_valid():
@@ -40,10 +39,8 @@ class ProductDetail(APIView):
             data = Product.objects.get(pk=pk)
             return Response({'success': True, 'msg': 'ok', 'data': model_to_dict(data)}, status=status.HTTP_200_OK)
         except ObjectDoesNotExist as e:
-            print(e)
             return Response({'success': False, 'msg': 'Not found', 'data': None}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
-            print(e)
             return Response({'success': False, 'msg': 'Error server', 'data': None}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -53,6 +50,5 @@ class ProductDetail(APIView):
             Product.objects.filter(pk=pk).update(name=data['name'])
             return Response({'success': True, 'msg': 'update ok', 'data': None}, status=status.HTTP_200_OK)
         except Exception as e:
-            print(e)
             return Response({'success': False, 'msg': 'Not found', 'data': None}, status=status.HTTP_404_NOT_FOUND)
         
