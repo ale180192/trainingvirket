@@ -38,7 +38,6 @@ class ProductDetail(APIView):
         try:
             data = Product.objects.get(pk=pk)
             data_dict = ProductSerializer(data)
-            print(data_dict.data)
             return Response({'success': True, 'msg': 'ok', 'data': model_to_dict(data)}, status=status.HTTP_200_OK)
         except ObjectDoesNotExist as e:
             return Response({'success': False, 'msg': 'Not found', 'data': None}, status=status.HTTP_404_NOT_FOUND)
@@ -50,7 +49,6 @@ class ProductDetail(APIView):
         data = request.data
         try:
             seri = ProductSerializer(data=data)
-            print(seri)
             if seri.is_valid():
                 Product.objects.filter(pk=pk).update(**seri.data)
                 return Response({'success': True, 'msg': 'update ok', 'data': None}, status=status.HTTP_200_OK)
