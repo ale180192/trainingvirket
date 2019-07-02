@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.core.exceptions import ObjectDoesNotExist       
+from django.forms.models import model_to_dict
 
 # third-party packages
 from rest_framework.views import Response, APIView
@@ -27,3 +29,30 @@ class ProductList(APIView):
     def get(self, request, format=None):
         products = Product.objects.all().values()
         return Response({'success': True, 'msg': 'ok list products', 'data': products}, status=status.HTTP_200_OK)
+
+
+
+class ProductDetail(APIView):
+
+    authentication = (TokenAuthentication,)
+    def get(self, request, pk, format=None):
+        try:
+            data = Product.objects.get(pk=pk)
+            return Response({'success': True, 'msg': 'ok', 'data': model_to_dict(data)}, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist as e:
+            print(e)
+            return Response({'success': False, 'msg': 'Not found', 'data': None}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            print(e)
+            return Response({'success': False, 'msg': 'Error server', 'data': None}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+    def patch(self, request, pk, format=None):
+        data = request.data
+        try:
+            Product.objects.filter(pk=pk).update(name=data['name'])
+            return Response({'success': True, 'msg': 'update ok', 'data': None}, status=status.HTTP_200_OK)
+        except Exception as e:
+            print(e)
+            return Response({'success': False, 'msg': 'Not found', 'data': None}, status=status.HTTP_404_NOT_FOUND)
+        

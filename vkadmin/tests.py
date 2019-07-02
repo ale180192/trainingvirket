@@ -5,7 +5,7 @@ import django
 from tenant_schemas.test.cases import TenantTestCase
 # from tenant_schemas.test.client import TenantClient
 from .tenant_client import TenantClient
-
+from rest_framework import status
 # own packeages
 from .models import User
 
@@ -14,40 +14,61 @@ from .models import User
 
 
 
+
+class VkTestCase(TenantTestCase):
+    '''
+        class that autehnticate to user for it have user
+    '''
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        print('init class')
+        self.user = 'test'
+        self.email = 'test@test.com'
+        self.password = 'testpwd'
+        self.name = 'test name'
+        self.password_wrong = 'wrong password   '
+        print('init')
+    
+    def setUp(self):
+        django.setup()
+        self.c = TenantClient(self.tenant)
+        print(self.c)
+
+     
+
+
 class UsersTestCase(TenantTestCase):
 
 
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     print('init class')
-    #     self.user = 'test'
-    #     self.email = 'test@test.com'
-    #     self.password = 'testpwd'
-    #     self.name = 'test name'
-    #     print('init')
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        print('init class')
+        self.user = 'test'
+        self.email = 'test@test.com'
+        self.password = 'testpwd'
+        self.name = 'test name'
+        self.password_wrong = 'wrong password   '
+        print('init')
 
     def setUp(self):
-        #django.setup()
+        django.setup()
         self.c = TenantClient(self.tenant)
-        # print(self.c)
+        print(self.c)
 
 
     def test_create_superuser(self):
-        # django.setup()
-        # superuser = User.objects.create_superuser(
-        # user = self.user,
-        # email = self.email,
-        # password = self.password,
-        # name = self.name)
-        # superuser.save()
-        # self.assertEqual(superuser.is_superuser, True)
-        # self.assertEqual(superuser.is_staff, True)
-        # self.assertEqual(superuser.is_active, True)
+        django.setup()
+        superuser = User.objects.create_superuser(
+        user = self.user,
+        email = self.email,
+        password = self.password,
+        name = self.name)
+        superuser.save()
+        self.assertEqual(superuser.is_superuser, True)
+        self.assertEqual(superuser.is_staff, True)
+        self.assertEqual(superuser.is_active, True)
 
-        request = self.c.get('/vkadmin/token', format='json')
-        print(request.json())
-        self.assertEqual(request.status_code,405)
-"""
     def test_authenticate_success(self):
         '''
             we authenticate with a user and right password
@@ -74,4 +95,39 @@ class UsersTestCase(TenantTestCase):
         for key in response_expect_keys:
             self.assertFalse(key in response.data)
 
-"""
+
+class ProductsTestCase(TenantTestCase):
+
+
+    def setUp(self):
+        print('--------------  ************** setup ProductsTestCase ************** -----------------------------')
+        print()
+        django.setup()
+        self.c = TenantClient(self.tenant)
+        help(self.c)
+
+
+    def test_insert(self):
+        data = {
+            'name': 'name value',
+            'description': 'description value',
+            'pricce': 55.69
+        }
+        response = self.c.post('/products', data=data)
+        print(response)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_list_all(self):
+        self.test_insert()
+        self.test_insert()
+        response = self.c.get('/products')
+        print(status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)  
+        self.assertEqual(len(response.data['data']), 2)
+
+    def test_update(self):
+        data_update = {
+            'name': 'name update',
+            'description': 'new description'
+        }
+        
