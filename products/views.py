@@ -38,6 +38,8 @@ class ProductDetail(APIView):
     def get(self, request, pk, format=None):
         try:
             data = Product.objects.get(pk=pk)
+            data_dict = ProductSerializer(data)
+            print(data_dict.data)
             return Response({'success': True, 'msg': 'ok', 'data': model_to_dict(data)}, status=status.HTTP_200_OK)
         except ObjectDoesNotExist as e:
             print(e)
@@ -50,8 +52,14 @@ class ProductDetail(APIView):
     def patch(self, request, pk, format=None):
         data = request.data
         try:
-            Product.objects.filter(pk=pk).update(name=data['name'])
-            return Response({'success': True, 'msg': 'update ok', 'data': None}, status=status.HTTP_200_OK)
+            seri = ProductSerializer(data=data)
+            print(seri)
+            if seri.is_valid():
+                Product.objects.filter(pk=pk).update(**seri.data)
+                return Response({'success': True, 'msg': 'update ok', 'data': None}, status=status.HTTP_200_OK)
+            else:
+                return Response({'success': True, 'msg': seri.errors, 'data': None}, status=status.HTTP_200_OK)
+
         except Exception as e:
             print(e)
             return Response({'success': False, 'msg': 'Not found', 'data': None}, status=status.HTTP_404_NOT_FOUND)
