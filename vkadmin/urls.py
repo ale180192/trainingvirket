@@ -21,12 +21,14 @@ from rest_framework import routers
 
 # third party
 from rest_framework_simplejwt import views as jwt_views
+from rest_framework_jwt.views import obtain_jwt_token
 
 # owns packages
 from vkadmin.views import UsersList
 
 urlpatterns = [
-    url(r'token', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    url(r'token/refresh', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
+    #url(r'token', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    #url(r'token/refresh', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
+    url(r'^api-token-auth', obtain_jwt_token),
     url(r'^users', UsersList.as_view()) # GET, POST users
 ]

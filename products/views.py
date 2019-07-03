@@ -6,6 +6,7 @@ from django.forms.models import model_to_dict
 from rest_framework.views import Response, APIView
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 
 # owns packages
 from .serializers import ProductSerializer
@@ -16,6 +17,7 @@ class ProductList(APIView):
         manage the products. We can create and list
     '''
     authentication = (TokenAuthentication,)
+    permissions = (IsAuthenticated,)
     def post(self, request, format=None):
         data = request.data
         product = ProductSerializer(data=data)
@@ -34,6 +36,7 @@ class ProductList(APIView):
 class ProductDetail(APIView):
 
     authentication = (TokenAuthentication,)
+    permissions = (IsAuthenticated,)
     def get(self, request, pk, format=None):
         try:
             data = Product.objects.get(pk=pk)

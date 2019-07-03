@@ -2,61 +2,35 @@
 import django
 
 # third-party packages
-from tenant_schemas.test.cases import TenantTestCase
-# from tenant_schemas.test.client import TenantClient
-from .tenant_client import TenantClient
 from rest_framework import status
+
 # own packeages
 from .models import User
 from products.models import Product
+from libs.test.utlis import AuthedSuperUserTestCase, TestUtils
 # Create your tests here.
 
 
 
 
-#TODO: Delete superfluous code
-class VkTestCase(TenantTestCase):
-    '''
-        class that autehnticate to user for it have user
-    '''
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.user = 'test'
-        self.email = 'test@test.com'
-        self.password = 'testpwd'
-        self.name = 'test name'
-        self.password_wrong = 'wrong password   '
-    
-    def setUp(self):
-        self.c = TenantClient(self.tenant)
 
 
-class UsersTestCase(TenantTestCase):
+class UsersTestCase(AuthedSuperUserTestCase):
 
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.setUp()
         self.user = 'test'
         self.email = 'test@test.com'
         self.password = 'testpwd'
         self.name = 'test name'
-        self.password_wrong = 'wrong password   '
+        self.password_wrong = 'wrong password'
+        user
 
-    def setUp(self):
-        self.c = TenantClient(self.tenant)
-
-    def _create_super_user(self):
-        superuser = User.objects.create_superuser(
-        user = self.user,
-        email = self.email,
-        password = self.password,
-        name = self.name)
-        superuser.save()
-        return superuser
 
     def test_create_superuser(self):
-        superuser = self._create_super_user()
+        superuser = self.create_super_user()
         self.assertEqual(superuser.is_superuser, True)
         self.assertEqual(superuser.is_staff, True)
         self.assertEqual(superuser.is_active, True)
@@ -66,7 +40,7 @@ class UsersTestCase(TenantTestCase):
             we authenticate with a user and right password
          
         '''
-        self._create_super_user()
+        self.create_super_user()
         response = self.c.post('/vkadmin/token', {'user': self.user, 'password': self.password}, format='json')
         self.assertEqual(response.status_code, 200)
         response_expect_keys = ['access', 'refresh']
@@ -84,18 +58,16 @@ class UsersTestCase(TenantTestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
     
 
-class ProductsTestCase(TenantTestCase):
+class ProductsTestCase(AuthedSuperUserTestCase):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.setUp()
         self.data = {
             'name': 'record number ',
             'description': 'description value',
             'pricce': 55.69
         }
-
-    def setUp(self):
-        self.c = TenantClient(self.tenant)
 
     def _insert_records(self, num_records=2):
         data_list = []
