@@ -35,7 +35,6 @@ class UsersTestCase(AuthedSuperUserTestCase):
         '''
         self.create_super_user(name='test1')
         response = self.c.post('/vkadmin/api-token-auth', {'user': 'test1', 'password': self.password}, format='json')
-        print(response)
         self.assertEqual(response.status_code, 200)
         response_expect_keys = ['token']
         for key in response_expect_keys:
@@ -49,7 +48,6 @@ class UsersTestCase(AuthedSuperUserTestCase):
 
         self.test_create_superuser()
         response = self.c.post('/vkadmin/api-token-auth', {'user': self.username, 'password': self.password_wrong}, format='json')
-        print(response)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
     
 

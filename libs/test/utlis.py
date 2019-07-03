@@ -26,7 +26,6 @@ class TestUtils(TenantTestCase):
     def set_credentials(self, user):
         response = self.c.post('/vkadmin/api-token-auth', 
             data={'user': user.user, 'password': self.password})
-        print(response)
         self.c.credentials(
             HTTP_AUTHORIZATION='BEARER {}'.format(response.json()['token']))
         return response
