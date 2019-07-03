@@ -20,17 +20,10 @@ class UsersTestCase(AuthedSuperUserTestCase):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.setUp()
-        self.user = 'test'
-        self.email = 'test@test.com'
-        self.password = 'testpwd'
-        self.name = 'test name'
-        self.password_wrong = 'wrong password'
-        user
 
 
     def test_create_superuser(self):
-        superuser = self.create_super_user()
+        superuser = self.create_super_user(name='test1')
         self.assertEqual(superuser.is_superuser, True)
         self.assertEqual(superuser.is_staff, True)
         self.assertEqual(superuser.is_active, True)
@@ -40,10 +33,11 @@ class UsersTestCase(AuthedSuperUserTestCase):
             we authenticate with a user and right password
          
         '''
-        self.create_super_user()
-        response = self.c.post('/vkadmin/token', {'user': self.user, 'password': self.password}, format='json')
+        self.create_super_user(name='test1')
+        response = self.c.post('/vkadmin/api-token-auth', {'user': 'test1', 'password': self.password}, format='json')
+        print(response)
         self.assertEqual(response.status_code, 200)
-        response_expect_keys = ['access', 'refresh']
+        response_expect_keys = ['token']
         for key in response_expect_keys:
             self.assertTrue(key in response.data)
     
@@ -54,15 +48,15 @@ class UsersTestCase(AuthedSuperUserTestCase):
         '''
 
         self.test_create_superuser()
-        response = self.c.post('/vkadmin/token', {'user': self.user, 'password': self.password_wrong}, format='json')
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        response = self.c.post('/vkadmin/api-token-auth', {'user': self.username, 'password': self.password_wrong}, format='json')
+        print(response)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
     
 
 class ProductsTestCase(AuthedSuperUserTestCase):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.setUp()
         self.data = {
             'name': 'record number ',
             'description': 'description value',

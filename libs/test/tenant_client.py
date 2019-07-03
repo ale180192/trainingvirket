@@ -4,7 +4,7 @@ from tenant_schemas.middleware import TenantMiddleware
 class TenantClient(APIClient):
     tm = TenantMiddleware()
 
-    def __init__(self, tenant, enforce_csrf_checks=False, **defaults):
+    def __init__(self, tenant=None, enforce_csrf_checks=False, **defaults):
         super(TenantClient, self).__init__(enforce_csrf_checks, **defaults)
         self.tenant = tenant
 
